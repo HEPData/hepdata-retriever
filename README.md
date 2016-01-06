@@ -7,7 +7,7 @@ A tool to get HEPData records.
 ```python
 
 from hepdata_retriever.retriever import Retriever
-__data_dir = 'Users/user/data/'
+__data_dir = os.path.abspath(os.path.dirname(__file__)) + '/data'
 retriever = Retriever(__data_dir)
 retriever.get_record('ins1404159')
 
@@ -21,7 +21,7 @@ retriever.get_record('ins1404159')
 ```python
 
 from hepdata_retriever.retriever import Retriever
-__data_dir = 'data/'
+__data_dir = os.path.abspath(os.path.dirname(__file__)) + '/data'
 
 retriever = Retriever(__data_dir)
 inspire_ids = retriever.get_all_ids_in_current_system()
