@@ -17,9 +17,12 @@ class RetrieverTest(unittest.TestCase):
         self.retriever = Retriever(__data_dir)
 
     def test_download(self):
-        self.retriever.get_record('ins1404159')
-        self.assertTrue(
-            os.path.exists(os.path.join(self.base_dir, 'data', 'ins1404159')))
+        records = ['ins1404159', 'ins1396140']
+
+        for record in records:
+            self.retriever.get_record(record)
+            self.assertTrue(
+                os.path.exists(os.path.join(self.base_dir, 'data', record)))
 
     def test_get_all_current_ids(self):
         inspire_ids = self.retriever.get_all_ids_in_current_system()
