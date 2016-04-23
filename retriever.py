@@ -1,7 +1,10 @@
 #!/usr/bin/python2.7
+from __future__ import print_function
 from hepdata_retriever.retriever import Retriever
 import os
+import shutil
 import errno
+import sys
 from progressbar import ProgressBar, Percentage, Bar, Widget
 
 data_dir  = '/hepdata/data/'
@@ -48,17 +51,23 @@ for index, inspire_id in enumerate(inspire_ids):
     submission_label.change_text(inspire_id)
     pbar.update(index)
 
-    path = data_dir + '/' + inspire_id[-2:] + '/' + inspire_id
-    if os.path.exists(path):
+    if inspire_id == '':
+        print('Warning: empty inspire_id', file=sys.stderr)
         continue
 
-    makedirs(path)
+    dest_path = data_dir + '/' + inspire_id[-2:] + '/'
+    makedirs(dest_path)
+    if os.path.exists(dest_path + inspire_id):
+        continue
+
     try:
         retriever.get_record(inspire_id)
+        shutil.move(temp_dir + '/' + inspire_id, dest_path)
+        os.remove(temp_dir + '/' + inspire_id + '.zip')
     except KeyboardInterrupt:
-        print('Interrupted.')
-        break
+        print('\nInterrupted.', file=sys.stderr)
+        raise SystemExit(2)
     except:
-        print('Ignoring %s.' % inspire_id)
+        print('Ignoring %s.' % inspire_id, file=sys.stderr)
 
 pbar.finish()
