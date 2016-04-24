@@ -55,8 +55,8 @@ for index, inspire_id in enumerate(inspire_ids):
         print('Warning: empty inspire_id', file=sys.stderr)
         continue
 
-    # I don't know what's wrong with this submission, it hangs on every time
-    if inspire_id == 'ins825040':
+    # I don't know what's wrong with these submission, they hang every time
+    if inspire_id in ['ins825040', 'ins1289225']:
         continue
 
     dest_path = data_dir + '/' + inspire_id[-2:] + '/'
