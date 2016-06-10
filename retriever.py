@@ -47,6 +47,9 @@ pbar = AlwaysUpdatingProgressBar(maxval=len(inspire_ids),
                        Bar(marker='#', left='[', right=']')
                    ]).start()
 
+ # fallback for very large YAML exports
+retriever2 = Retriever(temp_dir, base_url="http://hepdata.cedar.ac.uk/h2test/view/{0}/yaml")
+
 for index, inspire_id in enumerate(inspire_ids):
     submission_label.change_text(inspire_id)
     pbar.update(index)
@@ -55,17 +58,17 @@ for index, inspire_id in enumerate(inspire_ids):
         print('Warning: empty inspire_id', file=sys.stderr)
         continue
 
-    # I don't know what's wrong with these submission, they hang every time
-    if inspire_id in ['ins825040', 'ins1289225']:
-        continue
-
     dest_path = data_dir + '/' + inspire_id[-2:] + '/'
     makedirs(dest_path)
     if os.path.exists(dest_path + inspire_id):
         continue
 
     try:
-        retriever.get_record(inspire_id)
+        if inspire_id in ['ins825040', 'ins1289225']:
+            print('Warning: downloading from http://hepdata.cedar.ac.uk/h2test/view/{0}/yaml'.format(inspire_id), file=sys.stderr)
+            retriever2.get_record(inspire_id)
+        else:
+            retriever.get_record(inspire_id)
         shutil.move(temp_dir + '/' + inspire_id, dest_path)
         os.remove(temp_dir + '/' + inspire_id + '.zip')
     except KeyboardInterrupt:
